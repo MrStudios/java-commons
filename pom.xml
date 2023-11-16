@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <name>Java Commons</name>
+    <description>An commons for Java programming language.</description>
+
+    <groupId>pl.mrstudios.commons</groupId>
+    <artifactId>commons-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>inject</module>
+        <module>reflection</module>
+    </modules>
+
+    <dependencies>
+
+        <!-- ANNOTATIONS -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <modelVersion>4.0.0</modelVersion>
+
+</project>
