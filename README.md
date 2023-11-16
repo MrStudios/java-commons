@@ -15,14 +15,14 @@ Maven:
 Gradle: (Groovy)
 ```groovy
 maven {
-    url "https://repo.eternalcode.pl/releases"
+    url "https://repository.mrstudios.pl/public/"
 }
 ```
 
 Gradle (Kotlin)
 ```kotlin
 maven {
-    url = uri("https://repo.eternalcode.pl/releases")
+    url = uri("https://repository.mrstudios.pl/public/")
 }
 ```
 
