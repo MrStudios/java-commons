@@ -52,4 +52,9 @@ public class Injector {
         return this;
     }
 
+    public Injector register(Class<?> clazz, Object service) {
+        this.services.put(clazz, service);
+        return this;
+    }
+
 }
