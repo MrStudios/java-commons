@@ -36,7 +36,8 @@ public class Example {
     public static void main(String[] args) {
 
         Injector injector = new Injector()
-                .register(args); // String[].class -> args
+                .register(args) // String[].class
+                .register(Enemy.class, new Enemy("An Enemy")); // Enemy.class
 
         injector.inject(AnClass.class);
 
