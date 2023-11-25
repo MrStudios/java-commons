@@ -8,21 +8,21 @@ Maven:
 ```xml
 <repository>
     <id>mrstudios-repository</id>
-    <url>https://repository.mrstudios.pl/public/</url>
+    <url>https://repo.mrstudios.pl/public/</url>
 </repository>
 ```
 
 Gradle: (Groovy)
 ```groovy
 maven {
-    url "https://repository.mrstudios.pl/public/"
+    url "https://repo.mrstudios.pl/public/"
 }
 ```
 
 Gradle (Kotlin)
 ```kotlin
 maven {
-    url = uri("https://repository.mrstudios.pl/public/")
+    url = uri("https://repo.mrstudios.pl/public/")
 }
 ```
 
