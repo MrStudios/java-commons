@@ -1,0 +1,38 @@
+name: 'Bug Report'
+description: 'Select if you want to report commons issue.'
+title: "[BUG] "
+labels: [ 'bug' ]
+body:
+  - type: 'dropdown'
+    id: 'module'
+    attributes:
+      label: 'Module'
+      description: 'With what element do you have problems?'
+      multiple: false
+      options:
+        - 'Inject'
+        - 'Reflection'
+    validations:
+      required: true
+  - type: 'input'
+    id: 'commons-version'
+    attributes:
+      label: 'Commons Version'
+      description: 'What version of our commons are you using?'
+    validations:
+      required: true
+  - type: 'textarea'
+    id: 'details'
+    attributes:
+      label: 'Issue Details'
+      description: 'Describe your problem providing as many as possible details.'
+    validations:
+      required: true
+  - type: 'checkboxes'
+    id: 'terms'
+    attributes:
+      label: 'Confirmation'
+      description: 'By submitting this issue, you agree to follow our Contributing & Issues rules.'
+      options:
+        - label: 'I agree to follow this project Contributing & Issues rules.'
+          required: true
