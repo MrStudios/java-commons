@@ -53,6 +53,10 @@
 
     <repositories>
         <repository>
+            <id>mrstudios-public</id>
+            <url>https://repo.mrstudios.pl/public/</url>
+        </repository>
+        <repository>
             <id>paper-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
@@ -63,7 +67,7 @@
         <!-- PLATFORM -->
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
+            <artifactId>paper</artifactId>
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>

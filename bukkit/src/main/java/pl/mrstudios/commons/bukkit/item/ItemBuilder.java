@@ -1,5 +1,7 @@
 package pl.mrstudios.commons.bukkit.item;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
@@ -10,9 +12,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class ItemBuilder {
@@ -29,6 +33,7 @@ public class ItemBuilder {
     private @Nullable Map<Attribute, AttributeModifier> attributes;
     private @Nullable Integer customModelData;
     private @Nullable Boolean unbreakable;
+    private @Nullable GameProfile gameProfile;
 
     public ItemBuilder(@NotNull Material material) {
         this.material = material;
@@ -105,6 +110,12 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder texture(@NotNull String texture) {
+        this.gameProfile = new GameProfile(UUID.randomUUID(), "Player");
+        this.gameProfile.getProperties().put("textures", new Property("textures", texture));
+        return this;
+    }
+
     @SuppressWarnings("all")
     public ItemStack build() {
 
@@ -139,6 +150,18 @@ public class ItemBuilder {
 
         if (this.unbreakable != null)
             itemMeta.setUnbreakable(this.unbreakable);
+
+        if (this.gameProfile != null)
+            if (itemMeta instanceof SkullMeta skullMeta)
+                try {
+
+                    Method method = skullMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
+                    if (!method.isAccessible())
+                        method.setAccessible(true);
+
+                    method.invoke(skullMeta, this.gameProfile);
+
+                } catch (Exception ignored) {}
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
