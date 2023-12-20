@@ -125,7 +125,6 @@ public class ItemBuilder {
         if (this.name != null)
             itemMeta.setDisplayNameComponent(bungeeComponentSerializer.serialize(this.name.decoration(TextDecoration.ITALIC, false)));
 
-
         if (this.lore != null)
             itemMeta.setLoreComponents(
                     this.lore.stream()
