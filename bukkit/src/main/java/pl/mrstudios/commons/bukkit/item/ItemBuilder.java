@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -116,6 +117,16 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder skullOwner(@NotNull String player) {
+        this.gameProfile = new GameProfile(null, player);
+        return this;
+    }
+
+    public ItemBuilder skullOwner(@NotNull Player player) {
+        this.gameProfile = new GameProfile(null, player.getName());
+        return this;
+    }
+
     @SuppressWarnings("all")
     public ItemStack build() {
 
@@ -154,11 +165,18 @@ public class ItemBuilder {
             if (itemMeta instanceof SkullMeta skullMeta)
                 try {
 
-                    Method method = skullMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
-                    if (!method.isAccessible())
-                        method.setAccessible(true);
+                    if (this.gameProfile.getProperties().isEmpty())
+                        skullMeta.setOwner(this.gameProfile.getName());
 
-                    method.invoke(skullMeta, this.gameProfile);
+                    else {
+
+                        Method method = skullMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
+                        if (!method.isAccessible())
+                            method.setAccessible(true);
+
+                        method.invoke(skullMeta, this.gameProfile);
+
+                    }
 
                 } catch (Exception ignored) {}
 
