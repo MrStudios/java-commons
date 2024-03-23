@@ -1,5 +1,6 @@
 package pl.mrstudios.commons.reflection;
 
+import org.jetbrains.annotations.NotNull;
 import pl.mrstudios.commons.reflection.exception.ReflectionScannerException;
 
 import java.io.File;
@@ -12,12 +13,18 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public record Reflections<T>(String packageName) {
+import static java.lang.Class.forName;
+
+public record Reflections<CLASS>(
+        @NotNull String packageName
+) {
 
     @SuppressWarnings("unchecked")
-    public Collection<Class<? extends T>> getClassesImplementing(Class<?> iClass) {
+    public Collection<Class<? extends CLASS>> getClassesImplementing(
+            @NotNull Class<?> iClass
+    ) {
 
-        List<Class<? extends T>> collection = new ArrayList<>();
+        List<Class<? extends CLASS>> collection = new ArrayList<>();
 
         this.getProcessEntries().forEach((entry) -> {
 
@@ -29,12 +36,12 @@ public record Reflections<T>(String packageName) {
 
             try {
 
-                Class<?> clazz = Class.forName(entry.getName().replace('/', '.').replace(".class", ""));
+                Class<?> clazz = forName(entry.getName().replace('/', '.').replace(".class", ""));
                 for (Class<?> iFace : clazz.getInterfaces())
                     if (iFace.equals(iClass))
-                        collection.add((Class<? extends T>) clazz);
+                        collection.add((Class<? extends CLASS>) clazz);
 
-            } catch (ClassNotFoundException | NoClassDefFoundError ignored) {}
+            } catch (@NotNull Exception ignored) {}
 
         });
 
@@ -43,9 +50,11 @@ public record Reflections<T>(String packageName) {
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Class<? extends T>> getClassesAnnotatedWith(Class<? extends Annotation> aClass) {
+    public Collection<Class<? extends CLASS>> getClassesAnnotatedWith(
+            @NotNull Class<? extends Annotation> aClass
+    ) {
 
-        List<Class<? extends T>> collection = new ArrayList<>();
+        List<Class<? extends CLASS>> collection = new ArrayList<>();
 
         this.getProcessEntries().forEach((entry) -> {
 
@@ -57,11 +66,11 @@ public record Reflections<T>(String packageName) {
 
             try {
 
-                Class<?> clazz = Class.forName(entry.getName().replace('/', '.').replace(".class", ""));
+                Class<?> clazz = forName(entry.getName().replace('/', '.').replace(".class", ""));
                 if (clazz.isAnnotationPresent(aClass))
-                    collection.add((Class<? extends T>) clazz);
+                    collection.add((Class<? extends CLASS>) clazz);
 
-            } catch (ClassNotFoundException | NoClassDefFoundError ignored) {}
+            } catch (@NotNull Exception ignored) {}
 
         });
 
@@ -83,7 +92,7 @@ public record Reflections<T>(String packageName) {
             while (entries.hasMoreElements())
                 collection.add(entries.nextElement());
 
-        } catch (Exception exception) {
+        } catch (@NotNull Exception exception) {
             throw new ReflectionScannerException("Unable to fetch process classes because jar file does not exists or is not accessible.", exception);
         }
 
