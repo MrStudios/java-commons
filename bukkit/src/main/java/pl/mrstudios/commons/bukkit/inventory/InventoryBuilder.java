@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import static org.bukkit.Bukkit.createInventory;
+
 public class InventoryBuilder implements InventoryHolder {
 
     private final Inventory inventory;
@@ -26,39 +28,51 @@ public class InventoryBuilder implements InventoryHolder {
     private @Nullable InventoryType inventoryType;
     private final @NotNull Integer size;
 
-    public InventoryBuilder(@NotNull Integer size) {
+    public InventoryBuilder(
+            @NotNull Integer size
+    ) {
         this.size = size;
         this.handlers = new HashMap<>();
-        this.inventory = Bukkit.createInventory(this, size);
+        this.inventory = createInventory(this, size);
     }
 
-    public InventoryBuilder(@NotNull Component title) {
+    public InventoryBuilder(
+            @NotNull Component title
+    ) {
         this.title = title;
         this.handlers = new HashMap<>();
         this.size = DEFAULT_INVENTORY_SIZE;
-        this.inventory = Bukkit.createInventory(this, DEFAULT_INVENTORY_SIZE, this.title);
+        this.inventory = createInventory(this, DEFAULT_INVENTORY_SIZE, this.title);
     }
 
-    public InventoryBuilder(@NotNull InventoryType inventoryType) {
+    public InventoryBuilder(
+            @NotNull InventoryType inventoryType
+    ) {
         this.inventoryType = inventoryType;
         this.handlers = new HashMap<>();
         this.size = this.inventoryType.getDefaultSize();
-        this.inventory = Bukkit.createInventory(this, this.inventoryType);
+        this.inventory = createInventory(this, this.inventoryType);
     }
 
-    public InventoryBuilder(@NotNull Component title, @NotNull InventoryType inventoryType) {
+    public InventoryBuilder(
+            @NotNull Component title,
+            @NotNull InventoryType inventoryType
+    ) {
         this.title = title;
         this.handlers = new HashMap<>();
         this.inventoryType = inventoryType;
         this.size = this.inventoryType.getDefaultSize();
-        this.inventory = Bukkit.createInventory(this, this.inventoryType, title);
+        this.inventory = createInventory(this, this.inventoryType, title);
     }
 
-    public InventoryBuilder(@NotNull Component title, @NotNull Integer size) {
+    public InventoryBuilder(
+            @NotNull Component title,
+            @NotNull Integer size
+    ) {
         this.size = size;
         this.title = title;
         this.handlers = new HashMap<>();
-        this.inventory = Bukkit.createInventory(this, this.size, title);
+        this.inventory = createInventory(this, this.size, title);
     }
 
     /* Getter */
@@ -75,12 +89,16 @@ public class InventoryBuilder implements InventoryHolder {
     }
 
     /* Setter */
-    public InventoryBuilder service(@NotNull InventoryService inventoryService) {
+    public InventoryBuilder service(
+            @NotNull InventoryService inventoryService
+    ) {
         this.inventoryService = inventoryService;
         return this;
     }
 
-    public InventoryBuilder fill(@NotNull ItemBuilder itemBuilder) {
+    public InventoryBuilder fill(
+            @NotNull ItemBuilder itemBuilder
+    ) {
 
         for (int i = 0; i < this.size; i++)
             this.inventory.setItem(i, itemBuilder.build());
@@ -92,7 +110,10 @@ public class InventoryBuilder implements InventoryHolder {
 
     }
 
-    public InventoryBuilder fill(@NotNull ItemBuilder itemBuilder, @NotNull BiConsumer<Player, InventoryClickEvent> consumer) {
+    public InventoryBuilder fill(
+            @NotNull ItemBuilder itemBuilder,
+            @NotNull BiConsumer<Player, InventoryClickEvent> consumer
+    ) {
 
         for (int i = 0; i < this.size; i++)
             this.inventory.setItem(i, itemBuilder.build());
@@ -104,12 +125,19 @@ public class InventoryBuilder implements InventoryHolder {
 
     }
 
-    public InventoryBuilder item(@NotNull Integer slot, @NotNull ItemBuilder itemBuilder) {
+    public InventoryBuilder item(
+            @NotNull Integer slot,
+            @NotNull ItemBuilder itemBuilder
+    ) {
         this.inventory.setItem(slot, itemBuilder.build());
         return this;
     }
 
-    public InventoryBuilder item(@NotNull Integer slot, @NotNull ItemBuilder itemBuilder, @NotNull BiConsumer<Player, InventoryClickEvent> consumer) {
+    public InventoryBuilder item(
+            @NotNull Integer slot,
+            @NotNull ItemBuilder itemBuilder,
+            @NotNull BiConsumer<Player, InventoryClickEvent> consumer
+    ) {
         this.inventory.setItem(slot, itemBuilder.build());
         this.handlers.put(slot, consumer);
         return this;
@@ -134,7 +162,9 @@ public class InventoryBuilder implements InventoryHolder {
 
     }
 
-    public void display(@NotNull Player player) {
+    public void display(
+            @NotNull Player player
+    ) {
         player.openInventory(this.inventory);
     }
 

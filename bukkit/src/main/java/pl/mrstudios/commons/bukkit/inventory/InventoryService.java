@@ -13,18 +13,25 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.bukkit.event.EventPriority.MONITOR;
+
 public class InventoryService implements Listener {
 
-    public InventoryService(@NotNull Plugin plugin) {
+    public InventoryService(
+            @NotNull Plugin plugin
+    ) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public void register(@NotNull InventoryHolder holder, @NotNull Collection<InventoryHandler> collection) {
+    public void register(
+            @NotNull InventoryHolder holder,
+            @NotNull Collection<InventoryHandler> collection
+    ) {
         this.handlers.put(holder, collection);
     }
 
     @Deprecated
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = MONITOR)
     public void onInventoryClick(InventoryClickEvent event) {
 
         if (!(event.getWhoClicked() instanceof Player player))

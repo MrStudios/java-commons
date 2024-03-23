@@ -20,6 +20,10 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static java.util.UUID.randomUUID;
+import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
+import static net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer.get;
+
 public class ItemBuilder {
 
     /* Item Required Data */
@@ -36,42 +40,60 @@ public class ItemBuilder {
     private @Nullable Boolean unbreakable;
     private @Nullable GameProfile gameProfile;
 
-    public ItemBuilder(@NotNull Material material) {
+    public ItemBuilder(
+            @NotNull Material material
+    ) {
         this.material = material;
         this.amount = 1;
     }
 
-    public ItemBuilder(@NotNull Material material, @NotNull Integer amount) {
+    public ItemBuilder(
+            @NotNull Material material,
+            @NotNull Integer amount
+    ) {
         this.material = material;
         this.amount = amount;
     }
 
-    public ItemBuilder name(@NotNull Component name) {
+    public ItemBuilder name(
+            @NotNull Component name
+    ) {
         this.name = name;
         return this;
     }
 
-    public ItemBuilder lore(@NotNull List<Component> lore) {
+    public ItemBuilder lore(
+            @NotNull List<Component> lore
+    ) {
         this.lore = lore;
         return this;
     }
 
-    public ItemBuilder lore(@NotNull Component... lore) {
+    public ItemBuilder lore(
+            @NotNull Component... lore
+    ) {
         this.lore = List.of(lore);
         return this;
     }
 
-    public ItemBuilder itemFlags(@NotNull ItemFlag... itemFlags) {
+    public ItemBuilder itemFlags(
+            @NotNull ItemFlag... itemFlags
+    ) {
         this.itemFlags = List.of(itemFlags);
         return this;
     }
 
-    public ItemBuilder itemFlags(@NotNull Collection<ItemFlag> itemFlags) {
+    public ItemBuilder itemFlags(
+            @NotNull Collection<ItemFlag> itemFlags
+    ) {
         this.itemFlags = itemFlags;
         return this;
     }
 
-    public ItemBuilder attribute(@NotNull Attribute attribute, @NotNull AttributeModifier attributeModifier) {
+    public ItemBuilder attribute(
+            @NotNull Attribute attribute,
+            @NotNull AttributeModifier attributeModifier
+    ) {
 
         if (this.attributes == null)
             this.attributes = new EnumMap<>(Attribute.class);
@@ -81,12 +103,17 @@ public class ItemBuilder {
 
     }
 
-    public ItemBuilder attributes(@NotNull Map<Attribute, AttributeModifier> attributes) {
+    public ItemBuilder attributes(
+            @NotNull Map<Attribute, AttributeModifier> attributes
+    ) {
         this.attributes = attributes;
         return this;
     }
 
-    public ItemBuilder enchantments(@NotNull Enchantment enchantment, @NotNull Integer level) {
+    public ItemBuilder enchantments(
+            @NotNull Enchantment enchantment,
+            @NotNull Integer level
+    ) {
 
         if (this.enchantments == null)
             this.enchantments = new HashMap<>();
@@ -96,33 +123,45 @@ public class ItemBuilder {
 
     }
 
-    public ItemBuilder enchantments(@NotNull Map<Enchantment, Integer> enchantments) {
+    public ItemBuilder enchantments(
+            @NotNull Map<Enchantment, Integer> enchantments
+    ) {
         this.enchantments = enchantments;
         return this;
     }
 
-    public ItemBuilder customModelData(@NotNull Integer customModelData) {
+    public ItemBuilder customModelData(
+            @NotNull Integer customModelData
+    ) {
         this.customModelData = customModelData;
         return this;
     }
 
-    public ItemBuilder unbreakable(@NotNull Boolean unbreakable) {
+    public ItemBuilder unbreakable(
+            @NotNull Boolean unbreakable
+    ) {
         this.unbreakable = unbreakable;
         return this;
     }
 
-    public ItemBuilder texture(@NotNull String texture) {
-        this.gameProfile = new GameProfile(UUID.randomUUID(), "Player");
+    public ItemBuilder texture(
+            @NotNull String texture
+    ) {
+        this.gameProfile = new GameProfile(randomUUID(), "Player");
         this.gameProfile.getProperties().put("textures", new Property("textures", texture));
         return this;
     }
 
-    public ItemBuilder skullOwner(@NotNull String player) {
+    public ItemBuilder skullOwner(
+            @NotNull String player
+    ) {
         this.gameProfile = new GameProfile(null, player);
         return this;
     }
 
-    public ItemBuilder skullOwner(@NotNull Player player) {
+    public ItemBuilder skullOwner(
+            @NotNull Player player
+    ) {
         this.gameProfile = new GameProfile(null, player.getName());
         return this;
     }
@@ -134,12 +173,12 @@ public class ItemBuilder {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (this.name != null)
-            itemMeta.setDisplayNameComponent(bungeeComponentSerializer.serialize(this.name.decoration(TextDecoration.ITALIC, false)));
+            itemMeta.setDisplayNameComponent(bungeeComponentSerializer.serialize(this.name.decoration(ITALIC, false)));
 
         if (this.lore != null)
             itemMeta.setLoreComponents(
                     this.lore.stream()
-                            .map((component) -> component.decoration(TextDecoration.ITALIC, false))
+                            .map((component) -> component.decoration(ITALIC, false))
                             .map(bungeeComponentSerializer::serialize)
                             .toList()
             );
@@ -178,13 +217,13 @@ public class ItemBuilder {
 
                     }
 
-                } catch (Exception ignored) {}
+                } catch (@NotNull Exception ignored) {}
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
 
     }
 
-    protected static final BungeeComponentSerializer bungeeComponentSerializer = BungeeComponentSerializer.get();
+    protected static final BungeeComponentSerializer bungeeComponentSerializer = get();
 
 }
