@@ -9,18 +9,18 @@ Maven:
 <dependency>
     <groupId>pl.mrstudios.commons</groupId>
     <artifactId>commons-reflection</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
 Gradle: (Groovy)
 ```groovy
-implementation "pl.mrstudios.commons:commons-reflection:1.0.0"
+implementation "pl.mrstudios.commons:commons-reflection:1.1.0"
 ```
 
 Gradle (Kotlin)
 ```kotlin
-implementation("pl.mrstudios.commons:commons-reflection:1.0.0")
+implementation("pl.mrstudios.commons:commons-reflection:1.1.0")
 ```
 
 ## Example
