@@ -1,12 +1,19 @@
 package pl.mrstudios.commons.inject.exception;
 
+import org.jetbrains.annotations.NotNull;
+
 public class InjectConstructorException extends RuntimeException {
 
-    public InjectConstructorException(String message) {
+    public InjectConstructorException(
+            @NotNull String message
+    ) {
         super(message);
     }
 
-    public InjectConstructorException(String message, Throwable cause) {
+    public InjectConstructorException(
+            @NotNull String message,
+            @NotNull Throwable cause
+    ) {
         super(message, cause);
     }
 
