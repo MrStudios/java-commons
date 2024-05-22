@@ -44,11 +44,8 @@ public class Injector {
 
         AtomicReference<CLASS> type = new AtomicReference<>(null);
 
-        if (stream(clazz.getDeclaredConstructors()).noneMatch((constructor) -> constructor.isAnnotationPresent(Inject.class)))
-            if (!this.settings.ignoreMissingAnnotation())
-                throw new InjectConstructorException("Could not find any constructor annotated with @Inject in class " + clazz.getName() + ".");
-            else
-                return null;
+        if (!this.settings.ignoreMissingAnnotation() && stream(clazz.getDeclaredConstructors()).noneMatch((constructor) -> constructor.isAnnotationPresent(Inject.class)))
+            throw new InjectConstructorException("Could not find any constructor annotated with @Inject in class " + clazz.getName() + ".");
 
         stream(clazz.getDeclaredConstructors())
                 .forEach((constructor) -> {
