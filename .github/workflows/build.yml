@@ -1,0 +1,19 @@
+name: 'Commons Build'
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+      - name: 'Install Java Development Kit (17)'
+        uses: 'actions/setup-java@v4'
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: 'Assign Permissions'
+        run: 'chmod +x ./gradlew'
+      - name: 'Build (Gradle)'
+        run: './gradlew build'
