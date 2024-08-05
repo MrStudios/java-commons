@@ -12,9 +12,9 @@ public class InjectConstructorException extends RuntimeException {
 
     public InjectConstructorException(
             @NotNull String message,
-            @NotNull Throwable cause
+            @NotNull Throwable throwable
     ) {
-        super(message, cause);
+        super(message, throwable);
     }
 
 }

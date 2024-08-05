@@ -1,103 +1,64 @@
 package pl.mrstudios.commons.reflection;
 
 import org.jetbrains.annotations.NotNull;
-import pl.mrstudios.commons.reflection.exception.ReflectionScannerException;
 
-import java.io.File;
 import java.lang.annotation.Annotation;
-import java.security.CodeSource;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.Iterator;
 
-import static java.lang.Class.forName;
+import static java.util.Arrays.asList;
+import static pl.mrstudios.commons.reflection.types.Classes.classesInPackage;
 
-public record Reflections<CLASS>(
-        @NotNull String packageName
-) {
+@SuppressWarnings("rawtypes")
+public class Reflections<CLASS> implements Iterable<Class> {
 
-    @SuppressWarnings("unchecked")
-    public Collection<Class<? extends CLASS>> getClassesImplementing(
-            @NotNull Class<?> iClass
+    private final Collection<Class> collection;
+
+    public Reflections(
+            @NotNull String packageName
     ) {
-
-        List<Class<? extends CLASS>> collection = new ArrayList<>();
-
-        this.getProcessEntries().forEach((entry) -> {
-
-            if (!entry.getName().endsWith(".class") || entry.getName().contains("$"))
-                return;
-
-            if (!entry.getName().startsWith(this.packageName.replace('.', '/')))
-                return;
-
-            try {
-
-                Class<?> clazz = forName(entry.getName().replace('/', '.').replace(".class", ""));
-                for (Class<?> iFace : clazz.getInterfaces())
-                    if (iFace.equals(iClass))
-                        collection.add((Class<? extends CLASS>) clazz);
-
-            } catch (@NotNull Exception ignored) {}
-
-        });
-
-        return collection;
-
+        this.collection = classesInPackage(
+                (packageName.lastIndexOf('.') == -1) ?
+                        packageName : packageName.substring(0, packageName.lastIndexOf('.'))
+        );
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Class<? extends CLASS>> getClassesAnnotatedWith(
-            @NotNull Class<? extends Annotation> aClass
+    public @NotNull Collection<Class<CLASS>> getClassesImplementing(
+            @NotNull Class<?> interfaceClass
     ) {
-
-        List<Class<? extends CLASS>> collection = new ArrayList<>();
-
-        this.getProcessEntries().forEach((entry) -> {
-
-            if (!entry.getName().endsWith(".class") || entry.getName().contains("$"))
-                return;
-
-            if (!entry.getName().startsWith(this.packageName.replace('.', '/')))
-                return;
-
-            try {
-
-                Class<?> clazz = forName(entry.getName().replace('/', '.').replace(".class", ""));
-                if (clazz.isAnnotationPresent(aClass))
-                    collection.add((Class<? extends CLASS>) clazz);
-
-            } catch (@NotNull Exception ignored) {}
-
-        });
-
-        return collection;
-
+        return this.collection.stream()
+                .filter((clazz) -> asList(clazz.getInterfaces()).contains(interfaceClass))
+                .map((clazz) -> (Class<CLASS>) clazz)
+                .toList();
     }
 
-    private Collection<JarEntry> getProcessEntries() {
+    @SuppressWarnings("unchecked")
+    public @NotNull Collection<Class<CLASS>> getClassesAnnotatedWith(
+            @NotNull Class<? extends Annotation> annotationClass
+    ) {
+        return this.collection.stream()
+                .filter((clazz) -> clazz.isAnnotationPresent(annotationClass))
+                .map((clazz) -> (Class<CLASS>) clazz)
+                .toList();
+    }
 
-        List<JarEntry> collection = new ArrayList<>();
-        CodeSource codeSource = this.getClass().getProtectionDomain().getCodeSource();
+    @Override
+    public @NotNull Iterator<Class> iterator() {
+        return this.collection.iterator();
+    }
 
-        if (codeSource == null)
-            throw new ReflectionScannerException("Unable to fetch process classes because CodeSource is null..");
+    public static @NotNull Reflections<?> reflections(
+            @NotNull String packageName
+    ) {
+        return new Reflections<>(packageName);
+    }
 
-        try (JarFile jarFile = new JarFile(new File(codeSource.getLocation().toURI()))) {
-
-            Enumeration<JarEntry> entries = jarFile.entries();
-            while (entries.hasMoreElements())
-                collection.add(entries.nextElement());
-
-        } catch (@NotNull Exception exception) {
-            throw new ReflectionScannerException("Unable to fetch process classes because jar file does not exists or is not accessible.", exception);
-        }
-
-        return collection;
-
+    public static @NotNull <TYPE> Reflections<TYPE> reflections(
+            @NotNull String packageName,
+            @NotNull Class<TYPE> typeClass
+    ) {
+        return new Reflections<>(packageName);
     }
 
 }

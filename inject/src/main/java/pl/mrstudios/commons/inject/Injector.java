@@ -4,86 +4,53 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.mrstudios.commons.inject.annotation.Inject;
 import pl.mrstudios.commons.inject.exception.InjectConstructorException;
-import pl.mrstudios.commons.inject.settings.Settings;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static pl.mrstudios.commons.reflection.types.Constructors.supplyConstructor;
 
 public class Injector {
 
-    private final Settings settings;
     private final Map<Class<?>, Object> services;
 
     public Injector() {
-        this.settings = new Settings();
         this.services = new HashMap<>();
-    }
-
-    public Injector(
-            @NotNull Settings settings
-    ) {
-        this.settings = settings;
-        this.services = new HashMap<>();
-    }
-
-    public Injector(
-            @NotNull Consumer<Settings> consumer
-    ) {
-        this();
-        consumer.accept(this.settings);
     }
 
     @SuppressWarnings("unchecked")
     public @Nullable <CLASS> CLASS inject(
             @NotNull Class<CLASS> clazz
     ) {
-
-        AtomicReference<CLASS> type = new AtomicReference<>(null);
-
-        if (!this.settings.ignoreMissingAnnotation() && stream(clazz.getDeclaredConstructors()).noneMatch((constructor) -> constructor.isAnnotationPresent(Inject.class)))
-            throw new InjectConstructorException("Could not find any constructor annotated with @Inject in class " + clazz.getName() + ".");
-
-        stream(clazz.getDeclaredConstructors())
-                .forEach((constructor) -> {
-
-                    try {
-
-                        if (type.get() != null)
-                            return;
-
-                        Object[] constructorArguments = stream(constructor.getParameterTypes())
+        return (CLASS) stream(clazz.getDeclaredConstructors())
+                .filter((constructor) -> constructor.isAnnotationPresent(Inject.class))
+                .map((constructor) -> supplyConstructor(
+                        constructor, stream(constructor.getParameterTypes())
                                 .map(this.services::get)
-                                .toArray();
-
-                        type.set((CLASS) constructor.newInstance(constructorArguments));
-
-                    } catch (@NotNull Exception exception) {
-                        throw new InjectConstructorException("Could not inject arguments into class " + clazz.getName() + " constructor.", exception);
-                    }
-
-                });
-
-        return type.get();
-
+                                .toArray()
+                )).findFirst()
+                .orElseThrow(() -> new InjectConstructorException(format("Unable to inject parameters into constructor of '%s' class.", clazz.getName())));
     }
 
-    public @NotNull Injector register(
+    public @NotNull Injector registerService(
             @NotNull Object service
     ) {
         this.services.put(service.getClass(), service);
         return this;
     }
 
-    public @NotNull Injector register(
+    public @NotNull Injector registerService(
             @NotNull Class<?> clazz,
             @NotNull Object service
     ) {
         this.services.put(clazz, service);
         return this;
+    }
+
+    public static @NotNull Injector injector() {
+        return new Injector();
     }
 
 }
