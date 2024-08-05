@@ -14,3 +14,4 @@ rootProject.name = "commons"
 
 module("inject")
 module("reflection")
+module("sql")

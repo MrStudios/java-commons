@@ -1,6 +1,5 @@
 name: 'Bug Report'
 description: 'Select if you want to report commons issue.'
-title: "[BUG] "
 labels: [ 'bug' ]
 body:
   - type: 'dropdown'
@@ -10,8 +9,9 @@ body:
       description: 'With what element do you have problems?'
       multiple: false
       options:
-        - 'Inject'
-        - 'Reflection'
+        - 'inject'
+        - 'reflection'
+        - 'sql'
     validations:
       required: true
   - type: 'input'
