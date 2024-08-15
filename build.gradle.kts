@@ -1,2 +1,2 @@
 project.group = "pl.mrstudios.commons"
-project.version = "2.0.0"
+project.version = "2.0.1"
