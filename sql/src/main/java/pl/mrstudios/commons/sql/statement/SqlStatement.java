@@ -85,7 +85,30 @@ public class SqlStatement {
 
         this.elements.forEach((position, object) -> {
             try {
-                preparedStatement.setObject(position, object.object(), object.type());
+                switch (object.type()) {
+
+                    case VARCHAR, LONGVARCHAR, NVARCHAR, LONGNVARCHAR ->
+                        preparedStatement.setString(position, (String) object.object());
+
+                    case DOUBLE ->
+                        preparedStatement.setDouble(position, (Double) object.object());
+
+                    case TINYINT, SMALLINT, INTEGER ->
+                        preparedStatement.setInt(position, (Integer) object.object());
+
+                    case BIGINT ->
+                            preparedStatement.setLong(position, (Long) object.object());
+
+                    case FLOAT ->
+                            preparedStatement.setFloat(position, (Float) object.object());
+
+                    case BOOLEAN ->
+                        preparedStatement.setBoolean(position, (Boolean) object.object());
+
+                    default -> /* Added due to compatibility with some drivers. */
+                            preparedStatement.setObject(position, object.object(), object.type());
+
+                }
             } catch (@NotNull Exception exception) {
                 throw new RuntimeException("Unable to prepare statement due to exception.", exception);
             }
